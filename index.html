@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đóng góp ý kiến về Hội nghị Người lao động 2025</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f7f6; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        main { flex: 1; }
+        .survey-container { max-width: 700px; margin: 20px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        header { text-align: center; padding: 0; border-bottom: none; margin-bottom: 20px; }
+        footer { text-align: center; padding: 15px; margin-top: 20px; background-color: #f8f9fa; color: #6c757d; font-size: 0.8rem; border-top: 1px solid #e9ecef; }
+        footer p { margin: 2px 0; }
+        header h1 { font-size: 1.8rem; text-transform: uppercase; color: #212529; margin-bottom: 5px; line-height: 1.2; }
+        header .subtitle { font-size: 0.95rem; font-style: italic; color: #6c757d; margin-top: 0; margin-bottom: 20px; display: block; }
+        .intro { text-align: justify; margin-bottom: 30px; line-height: 1.6; padding: 15px; border-radius: 8px; border: 1px solid #28a745; font-family: Roboto, sans-serif ;}
+        
+        .section-title { font-size: 1.8rem; color: #0056b3; text-align: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 2px solid #007BFF; }
+        .form-step { display: none; }
+        .form-step.active { display: block; animation: fadeIn 0.5s; }
+        .form-step[data-step] { border: 1px solid #007BFF; padding: 25px; border-radius: 8px; margin-top: 20px; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .form-row { display: flex; gap: 20px; }
+        .form-group { margin-bottom: 25px; flex: 1; }
+        .form-group.id-group { position: relative; }
+
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
+        input[type="text"], select, textarea { width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; font-size: 1rem; }
+        input[readonly], input:disabled { background-color: #e9ecef; cursor: not-allowed; }
+        
+        .footer-controls { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-top: 30px; }
+        .navigation-buttons { display: flex; gap: 10px; }
+        #response-message { flex-grow: 1; margin: 0; text-align: center; }
+
+        .nav-btn { background-color: #007BFF; color: white; padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; font-weight: 600; }
+        .nav-btn:disabled { background-color: #cccccc; cursor: not-allowed; }
+        #congdoan-questions-container .section-title {font-size: 1.5rem;}
+		.section-subtitle {font-size: 1.5rem; font-style: italic; color: #6c757d; text-align: center; margin-top: -5px;  margin-bottom: 20px;}
+		
+        .autocomplete-suggestions { 
+            display: none;
+            border: 1px solid #ddd; 
+            max-height: 150px; 
+            overflow-y: auto;
+			-webkit-overflow-scrolling: touch;			
+            position: absolute; 
+            background: white; 
+            z-index: 1000; 
+            box-sizing: border-box; 
+        }
+        .autocomplete-suggestions div { padding: 10px; cursor: pointer; }
+        .autocomplete-suggestions div:hover { background-color: #f1f1f1; }
+        
+        .question-options { display: flex; align-items: center; margin-bottom: 15px; }
+        .question-options input[type="radio"] { width: auto; margin-right: 10px; transform: scale(1.6); cursor: pointer; }
+        .question-options label { margin-bottom: 0; font-weight: normal; font-size: 1.3rem; }
+        .other-textbox { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ccc; }
+        
+        .form-step h2 { text-align: left; font-size: 1.3rem;}
+        .question-subtitle { font-size: 1rem; font-style: italic; color: #6c757d; margin-top: -15px; margin-bottom: 30px; padding-left: 5px; }
+        
+        .justify-text {text-align: center;}
+
+        .alert { padding: 15px; border: 1px solid transparent; border-radius: 8px; font-weight: bold; }
+        .alert.alert-info { background-color: transparent; border-color: transparent; color: #007bff;}
+        .alert-error { color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; }
+        .invalid-input { border-color: #dc3545 !important; }
+        .section-subtitle {
+			font-size: 0.95rem;
+			font-style: italic;
+			color: #6c757d;
+			text-align: center;
+			margin-top: -5px; /* Điều chỉnh để gần gạch chân hơn */
+			margin-bottom: 20px;
+		}
+		
+		
+        /* ### PHẦN CSS ĐÃ SỬA ### */
+        @media (max-width: 768px) {
+            .survey-container { margin: 10px; padding: 20px; }
+            header h1 { font-size: 1.5rem; }
+            .form-row { display: block; }
+            .form-step[data-step] { padding: 20px; }
+            
+            /* Sửa lại layout cho các nút trên mobile */
+            .footer-controls { 
+                flex-wrap: wrap;
+				align-items: center;
+                justify-content: space-between;
+            }
+            #response-message { 
+                
+                order: 1; /* Đưa xuống dưới cùng */
+                margin: 0; 
+                text-align: left;
+            }
+            .prev { 
+                order: 2; /* Nút Quay lại ở vị trí 2 */
+            }
+            .navigation-buttons { 
+                order: 3; /* Khối nút Next/Submit ở vị trí 3 */
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<main>
+    <div class="survey-container">
+        <header><h1>Đóng góp ý kiến về Hội nghị Người lao động LIWAYWAY năm 2025</h1><p class="subtitle">Áp Dụng Cho Cấp Tổ Trưởng Trở Lên</p></header>
+        <div class="intro"><b> Lưu ý:</b> Các ý kiến đóng góp sẽ được BCH. Công Đoàn Cơ Sở tổng hợp và gửi đến Ban Giám Đốc để xem xét và phản hồi trong Hội Nghị Người lao động.<br><p>Những ý kiến đóng góp được Ban Giám Đốc đánh giá khả thi sẽ được xem xét triển khai theo lộ trình phù hợp. Các ý kiến không khả thi, trái với quy định pháp luật lao động, hoặc vượt quá khả năng tài chính của công ty sẽ không được đưa vào xem xét.</p><b>Hạn chót gửi khảo sát: 25/10/2025</b></div>
+                
+        <form id="survey-form" novalidate>
+            <h2 class="section-title">Phần 1: Thông tin cá nhân</h2>
+            <div id="personal-info-step" class="form-step active" data-step="0">
+                <div class="form-group"><label for="company-select">Bạn ở công ty: <span style="color:red;">*</span></label><select id="company-select" name="CongTy" required><option value="">Đang tải...</option></select></div>
+                <div class="form-row"><div class="form-group id-group"><label for="employee-id-input">Mã NV: <span style="color:red;">*</span></label><input type="text" id="employee-id-input" name="MaNV" required autocomplete="off" placeholder="Chọn công ty trước" disabled><div class="autocomplete-suggestions" id="id-suggestions"></div></div><div class="form-group"><label for="employee-name">Họ và Tên:</label><input type="text" id="employee-name" name="HoTen" readonly></div></div>
+                <div class="form-row"><div class="form-group"><label for="employee-department">Bộ Phận:</label><input type="text" id="employee-department" name="BoPhan" readonly></div><div class="form-group"><label for="employee-position">Chức Vụ:</label><input type="text" id="employee-position" name="ChucVu" readonly></div></div>
+            </div>
+            
+            <div id="hnnld-questions-container"></div>
+            <div id="congdoan-questions-container"></div>
+
+            <div class="footer-controls">
+                <button type="button" class="nav-btn prev" id="prev-btn">Quay lại</button>
+                <p class="alert" id="response-message"></p>
+                <div class="navigation-buttons">
+                    <button type="button" class="nav-btn next" id="next-btn">Tiếp theo</button>
+                    <button type="submit" class="nav-btn" id="submit-btn">Gửi khảo sát</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2025 Được triển khai bởi Charl94. v6 & <a href="https://github.com/usernamecuaban" target="_blank">GitHub</a>.</p>
+    <p>Để được hỗ trợ, vui lòng liên hệ Phòng Nhân sự.</p>
+</footer>
+
+<script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4WWLrARp8QlqW53OhU-jpHa6An-wvYyylgUMhoHZU8NakFoy6Jupuf5nOjkTxAzPaJg/exec';
+    const congDoanQuestions = [ { title: "1. Bạn cảm thấy mức độ thông tin về hoạt động, chính sách của CĐCS là đầy đủ và kịp thời như thế nào? Nếu chưa vui lòng nêu cụ thể những khía cạnh mà Công đoàn cần cải thiện trong công tác truyền thông và cung cấp thông tin (Ví dụ: Phương tiện, tần suất, nội dung...)", name: "CD_Question1" }, { title: "2. Bạn cảm thấy dễ dàng tiếp cận và chia sẽ vấn đề với các thành viên BCH.CĐCS như thế nào? Nếu chưa vui lòng đề xuất các giải pháp/cách thức mới để BCH.CĐCS có thể gần gũi và hỗ trợ Đoàn viên kịp thời hơn", name: "CD_Question2" }, { title: "3.Bạn cảm thấy hài lòng với chất lượng và sự đa dạng của các hoạt động Công đoàn (Văn hóa, thể thao, phúc lợi...) như thế nào? Nếu chưa vui lòng đề xuất các loại hình hoạt động hoặc phúc lợi mới mà Công đoàn nên tổ chức/cung cấp để đáp ứng tốt hơn nhu cầu của Đoàn viên", name: "CD_Question3" } ];
+    const hnnldQuestions = [ null, { title: "1. Xây dựng sửa đổi các quy chế có liên quan trực tiếp đến quyền lợi và nghĩa vụ của NLĐ", subtitle: "Những đề xuất phải phù hợp với quy định của pháp luật lao động.", name: "Question1" }, { title: "2. Thỏa ước lao động tập thể", subtitle: "Những đề xuất phải phù hợp với quy định của pháp luật lao động và phù hợp với điều kiện thực tế của doanh nghiệp.", name: "Question2" }, { title: "3. Công tác chăm lo đời sống, vật chất và tinh thần cho người lao động", name: "Question3" }, { title: "4. Công tác An toàn vệ sinh lao động", name: "Question4" }, { title: "5. Về công tác Phòng Chống Cháy nổ", name: "Question5" }, { title: "6. Môi trường", name: "Question6" }, { title: "7. Cải thiện điều kiện làm việc", name: "Question7" }, { title: "8. Nội quy lao động", subtitle: "Những đề xuất phải phù hợp với quy định của pháp luật lao động.", name: "Question8" }, { title: "9. Những ý kiến khác", subtitle: "Những ý kiến khác liên quan đến việc ngăn ngừa, hạn chế TNLĐ; giảm sản phẩm hỏng; cải tiến sản phẩm, cải tiến máy móc hoặc góp ý cho phương hướng, nhiệm vụ của năm 2026.", name: "Question9" } ];
+    const hnnldManagerPath = [4, 5, 6, 7, 8, 9];
+    const hnnldStandardPath = [1, 2, 3, 7, 8, 9];
+    function createCongDoanQuestionStepHTML(questionData, stepIndex) { const name = questionData.name; return ` <div class="form-step" data-step="${stepIndex}"> <h2 class="justify-text">${questionData.title}</h2> <div class="form-group question-options"><input type="radio" id="${name}_khong" name="${name}" value="Không có ý kiến" required><label for="${name}_khong">Không có ý kiến</label></div> <div class="form-group"><div class="question-options"><input type="radio" id="${name}_khac" name="${name}" value="Khác"><label for="${name}_khac">Mục khác</label></div><div class="other-textbox"><div class="form-group"><label>Ý Kiến Đề Xuất:</label><textarea name="${name}_YKien"></textarea></div><div class="form-group"><label>Giải Pháp Thực Hiện:</label><textarea name="${name}_GiaiPhap"></textarea></div> <div class="form-group"><label>Kết Quả:</label><textarea name="${name}_KetQua"></textarea></div> </div></div> </div>`; }
+    function createHNNLDQuestionStepHTML(questionData, stepIndex) { if (!questionData) return ''; const subtitleHTML = questionData.subtitle ? `<p class="question-subtitle"><b>Lưu ý:</b> ${questionData.subtitle}</p>` : ''; const name = questionData.name; return ` <div class="form-step" data-step="${stepIndex}"> <h2>${questionData.title}</h2> ${subtitleHTML} <div class="form-group question-options"><input type="radio" id="${name}_khong" name="${name}" value="Không có ý kiến" required><label for="${name}_khong">Không có ý kiến</label></div> <div class="form-group"><div class="question-options"><input type="radio" id="${name}_khac" name="${name}" value="Khác"><label for="${name}_khac">Mục khác</label></div><div class="other-textbox"><div class="form-group"><label>Ý Kiến Đề Xuất:</label><textarea name="${name}_YKien"></textarea></div><div class="form-group"><label>Giải Pháp Thực Hiện:</label><textarea name="${name}_GiaiPhap"></textarea></div><div class="form-group"><label>Kết Quả:</label><textarea name="${name}_KetQua"></textarea></div></div></div> </div>`; }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('survey-form');
+        const introSection = document.querySelector('.intro');
+        const companySelect = document.getElementById('company-select');
+        const employeeIdInput = document.getElementById('employee-id-input');
+        const idSuggestions = document.getElementById('id-suggestions');
+        const employeeNameInput = document.getElementById('employee-name');
+        const employeeDepartmentInput = document.getElementById('employee-department');
+        const employeePositionInput = document.getElementById('employee-position');
+        const footerControls = document.querySelector('.footer-controls');
+        const navButtonsContainer = document.querySelector('.navigation-buttons');
+        const nextBtn = document.getElementById('next-btn');7
+        const prevBtn = document.getElementById('prev-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const responseMessage = document.getElementById('response-message');
+        const hnnldContainer = document.getElementById('hnnld-questions-container');
+        hnnldContainer.innerHTML = `<h2 class="section-title" style="display: none;">Phần 2: Ý Kiến Hội Nghị Người Lao Động</h2>` + hnnldQuestions.map((q, i) => createHNNLDQuestionStepHTML(q, i)).join(''); 
+        const cdContainer = document.getElementById('congdoan-questions-container');
+        cdContainer.innerHTML = `<h2 class="section-title" style="display: none;">Phần 3: Xây Dựng Mối Quan Hệ Công Đoàn Vững Mạnh </h2><p class="section-subtitle"> Nội dung đóng góp ý kiến nhằm mục đích Xây Dựng & Tăng Cường mối quan hệ giữa BCH.CĐCS và Đoàn viên. Đồng thời nâng cao chất lượng hoạt động và hiệu quả hỗ trợ của CĐCS.</p>` + congDoanQuestions.map((q, i) => createCongDoanQuestionStepHTML(q, i + hnnldQuestions.length)).join('');
+        const allSteps = Array.from(document.querySelectorAll('.form-step'));
+        const sectionTitles = document.querySelectorAll('.section-title');
+		const sectionSubtitles = document.querySelectorAll('.section-subtitle');
+        let debounceTimer;
+        let currentStepIndex = 0;
+        let surveyPath = [0]; 
+        const showNotification = (message, type = 'info') => { responseMessage.textContent = message; responseMessage.className = `alert alert-${type}`; responseMessage.style.display = message ? 'block' : 'none'; };
+        const clearDependentFields = () => { employeeNameInput.value = ''; employeeDepartmentInput.value = ''; employeePositionInput.value = ''; nextBtn.style.display = 'none'; showNotification(''); };
+        const clearAllPersonalFields = () => { clearDependentFields(); employeeIdInput.value = ''; };
+        fetch(SCRIPT_URL).then(res => res.ok ? res.json() : Promise.reject('Không thể tải danh sách công ty.')).then(data => { companySelect.innerHTML = '<option value="">-- Chọn công ty --</option>'; data.forEach(name => companySelect.innerHTML += `<option value="${name}">${name}</option>`); }).catch(error => showNotification(error.toString(), 'error'));
+        const showStep = (stepIndex) => {
+            introSection.style.display = stepIndex > 0 ? 'none' : 'block';
+            const currentStepNumber = surveyPath[stepIndex];
+            allSteps.forEach(step => step.classList.remove('active'));
+            const activeStep = allSteps.find(step => parseInt(step.dataset.step) === currentStepNumber);
+            if(activeStep) {
+                activeStep.classList.add('active');
+                const h2 = activeStep.querySelector('h2');
+                if (h2 && !h2.classList.contains('justify-text')) { 
+                    const isHnnldQuestion = currentStepNumber >= 1 && currentStepNumber < hnnldQuestions.length;
+                    if (isHnnldQuestion) { const hnnldPath = surveyPath.filter(step => step >= 1 && step < hnnldQuestions.length); const questionNum = hnnldPath.indexOf(currentStepNumber) + 1; const originalText = hnnldQuestions[currentStepNumber].title.substring(hnnldQuestions[currentStepNumber].title.indexOf('.') + 1).trim(); h2.textContent = `${questionNum}. ${originalText}`; }
+                }
+            }
+            sectionTitles.forEach(title => title.style.display = 'none');
+			sectionSubtitles.forEach(subtitle => subtitle.style.display = 'none');
+            if (currentStepNumber === 0) { sectionTitles[0].style.display = 'block';  } 
+            else if (currentStepNumber >= 1 && currentStepNumber < hnnldQuestions.length) { sectionTitles[1].style.display = 'block'; }
+            else { sectionTitles[2].style.display = 'block'; sectionSubtitles[0].style.display = 'block'; }
+            const isFirstStep = stepIndex === 0;
+            const isActualLastStep = surveyPath.length > 1 && stepIndex === surveyPath.length - 1;
+            if (isFirstStep) {
+                prevBtn.style.display = 'none';
+                submitBtn.style.display = 'none';
+                nextBtn.style.display = 'block'; 
+                footerControls.style.justifyContent = 'flex-end';
+                responseMessage.style.display = 'none'; 
+                if (!employeeNameInput.value) { nextBtn.style.display = 'none'; }
+            } else if (isActualLastStep) {
+                prevBtn.style.display = 'block';
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'block';
+                footerControls.style.justifyContent = 'space-between';
+            } else {
+                prevBtn.style.display = 'block';
+                nextBtn.style.display = 'block';
+                submitBtn.style.display = 'none';
+                footerControls.style.justifyContent = 'space-between';
+            }
+        };
+        const validateCurrentStep = () => {
+    const currentStepDiv = allSteps.find(step => step.classList.contains('active'));
+    if (!currentStepDiv) return false;
+    let isValid = true;
+    showNotification('');
+    currentStepDiv.querySelectorAll('.invalid-input').forEach(el => el.classList.remove('invalid-input'));
+    if (currentStepIndex === 0) { if (!employeeNameInput.value) { isValid = false; showNotification('Vui lòng chọn Mã Nhân viên hợp lệ.', 'error'); employeeIdInput.classList.add('invalid-input'); } }
+    else { 
+        const checkedRadio = currentStepDiv.querySelector('input[type="radio"]:checked'); 
+        if (!checkedRadio) { 
+            isValid = false; 
+            alert('Vui lòng chọn một phương án'); 
+        } else if (checkedRadio.value === 'Khác') { 
+            const textareas = currentStepDiv.querySelectorAll('.other-textbox textarea');
+            if (textareas.length > 0) {
+                textareas.forEach(textarea => { 
+                    if (textarea.value.trim() === '') { 
+                        isValid = false; 
+                        textarea.classList.add('invalid-input'); 
+                    } 
+                }); 
+                if (!isValid) { 
+                    alert(`Vui lòng điền đầy đủ câu trả lời.`); 
+                }
+            }
+        } 
+    }
+    return isValid;
+};
+        companySelect.addEventListener('change', () => {
+            clearAllPersonalFields(); showNotification('');
+            const selectedCompany = companySelect.value;
+            if (selectedCompany) {
+                employeeIdInput.disabled = true; employeeIdInput.placeholder = 'Đang tải dữ liệu, vui lòng chờ...';
+                fetch(`${SCRIPT_URL}?action=warmUpCache&company=${encodeURIComponent(selectedCompany)}`).then(res => res.ok ? res.json() : Promise.reject('Không thể tải dữ liệu nhân viên.')).then(data => { if (data.status === 'ready') { employeeIdInput.disabled = false; employeeIdInput.placeholder = 'Gõ để tìm mã NV...'; employeeIdInput.focus(); } else { throw new Error(data.error || 'Lỗi không xác định từ server.'); } }).catch(error => { showNotification(error.message, 'error'); employeeIdInput.placeholder = 'Lỗi tải dữ liệu!'; });
+            } else { employeeIdInput.disabled = true; employeeIdInput.placeholder = 'Chọn công ty trước'; }
+        });
+        const processEmployeeSelection = (employee) => { employeeIdInput.value = employee.id; employeeNameInput.value = employee.name; employeeDepartmentInput.value = employee.department; employeePositionInput.value = employee.position; idSuggestions.innerHTML = ''; idSuggestions.style.display = 'none'; checkIfAlreadySubmitted(companySelect.value, employee.id); };
+        const checkIfAlreadySubmitted = (company, id) => { showNotification('Đang kiểm tra thông tin nhân viên...', 'info'); nextBtn.style.display = 'none'; fetch(`${SCRIPT_URL}?action=checkDuplicate&company=${encodeURIComponent(company)}&id=${encodeURIComponent(id)}`).then(res => res.ok ? res.json() : Promise.reject('Lỗi khi kiểm tra dữ liệu.')).then(data => { if (data.isDuplicate) { showNotification('Mã nhân viên này đã gửi khảo sát. Vui lòng liên hệ Nhân sự.', 'error'); } else { showNotification('Thông tin hợp lệ. Bạn có thể tiếp tục.', 'info'); nextBtn.style.display = 'block'; } }).catch(error => showNotification(error.toString(), 'error')); };
+        employeeIdInput.addEventListener('input', () => {
+            if (employeeNameInput.value !== '') { clearDependentFields(); }
+            clearTimeout(debounceTimer);
+            const query = employeeIdInput.value.toLowerCase().trim();
+            if (query.length < 1) { idSuggestions.style.display = 'none'; return; }
+            debounceTimer = setTimeout(() => {
+                fetch(`${SCRIPT_URL}?company=${encodeURIComponent(companySelect.value)}&query=${encodeURIComponent(query)}`).then(res => res.ok ? res.json() : []).then(filtered => {
+                    idSuggestions.innerHTML = '';
+                    filtered.forEach(emp => { const div = document.createElement('div'); div.textContent = `${emp.id} - ${emp.name}`; div.addEventListener('click', () => processEmployeeSelection(emp)); idSuggestions.appendChild(div); });
+                    const inputWidth = employeeIdInput.offsetWidth;
+                    idSuggestions.style.width = `${inputWidth}px`;
+                    idSuggestions.style.display = filtered.length > 0 ? 'block' : 'none';
+                });
+            }, 300);
+        });
+        const validateAndSelectEmployee = async (id) => {
+            if (!id) return;
+            showNotification('Đang kiểm tra...', 'info');
+            try {
+                const res = await fetch(`${SCRIPT_URL}?company=${encodeURIComponent(companySelect.value)}&query=${encodeURIComponent(id)}`);
+                if (!res.ok) throw new Error('Lỗi mạng khi kiểm tra.');
+                const data = await res.json();
+                const employee = data.find(emp => emp.id.toLowerCase() === id.toLowerCase());
+                if (employee) { processEmployeeSelection(employee); } 
+                else { showNotification('Mã NV không hợp lệ hoặc không có trong danh sách.', 'error'); clearDependentFields(); }
+            } catch (error) { showNotification(error.message, 'error'); }
+        };
+        employeeIdInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault(); clearTimeout(debounceTimer); idSuggestions.style.display = 'none';
+                validateAndSelectEmployee(employeeIdInput.value.trim());
+            }
+        });
+        employeeIdInput.addEventListener('blur', () => {
+            setTimeout(() => {
+                if (employeeNameInput.value) { idSuggestions.style.display = 'none'; return; }
+                validateAndSelectEmployee(employeeIdInput.value.trim());
+            }, 200);
+        });
+        document.addEventListener('click', (e) => { if (!employeeIdInput.contains(e.target)) idSuggestions.style.display = 'none'; });
+        nextBtn.addEventListener('click', () => { if (!validateCurrentStep()) return; if (currentStepIndex === 0) { const position = employeePositionInput.value.trim().toLowerCase(); const isManager = position.startsWith('tổ trưởng') || position === 'senior office staff'; const hnnldPathForUser = isManager ? hnnldManagerPath : hnnldStandardPath; const cdPath = congDoanQuestions.map((q, i) => i + hnnldQuestions.length); surveyPath = [0, ...hnnldPathForUser, ...cdPath]; } if (currentStepIndex < surveyPath.length - 1) { currentStepIndex++; showStep(currentStepIndex); } });
+        prevBtn.addEventListener('click', () => { if (currentStepIndex > 0) { currentStepIndex--; showStep(currentStepIndex); } });
+        form.addEventListener('submit', (e) => { e.preventDefault(); if (!validateCurrentStep()) return; submitBtn.disabled = true; showNotification('Đang gửi dữ liệu...', 'info'); const formData = new FormData(form); fetch(SCRIPT_URL, { method: 'POST', body: formData }).then(res => res.ok ? res.json() : Promise.reject('Server gặp lỗi khi gửi.')).then(data => { if (data.result === 'success') { window.location.href = 'thanks.html'; } else { throw new Error(data.message || 'Có lỗi không xác định xảy ra.'); } }).catch(error => showNotification(`Lỗi: ${error.message}`, 'error')).finally(() => submitBtn.disabled = false); });
+        form.addEventListener('change', (e) => { if (e.target.type === 'radio') { const parentStep = e.target.closest('.form-step'); if (!parentStep) return; const otherTextbox = parentStep.querySelector('.other-textbox'); if (e.target.value === 'Khác') { otherTextbox.style.display = 'block'; } else { otherTextbox.style.display = 'none'; } } });
+        
+        showStep(currentStepIndex);
+    });
+</script>
+
+</body>
+</html>
